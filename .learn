@@ -1,6 +1,10 @@
 tags:
-  - javascript
+  - this
+  - bind
+  - call
+  - apply
+  - code-along
 languages:
   - javascript
 resources:
-  - 1
+  - 3
