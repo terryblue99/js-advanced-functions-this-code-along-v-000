@@ -24,10 +24,11 @@ Don't forget to code along in your console!
 We can create objects in JavaScript to associate values to properties, like a sandwich:
 ```js
 const pbj = {
-  bread: 'white',
-  ingredients: ['peanut butter', 'jelly'],
-  cut: 'triangles'
-}
+  name: 'PB&J',
+  bread: 'White',
+  ingredients: ['Peanut Butter', 'Jelly'],
+  cut: 'Triangles'
+};
 ```
 
 We can also use a constructor function to create all kinds of sandwich objects:
@@ -38,61 +39,67 @@ function Sandwich (bread, ingredients, cut) {
   this.cut = cut;
 }
 
-const blt = new Sandwich('white', ['bacon','lettuce','tomato','mayo'],'rectangle');
-const reuben = new Sandwich('rye', ['corned beef','sauerkraut','swiss','russian dressing'],'diagonal');
+const blt = new Sandwich('White', ['Bacon', 'Lettuce', 'Tomato', 'Mayo'], 'Rectangle');
+const reuben = new Sandwich('Rye', ['Corned Beef', 'Sauerkraut', 'Swiss', 'Russian dressing'], 'Diagonal');
 ```
 
 And we can even attach a function to an object like this:
 ```js
 const pbj = {
-  bread: 'white',
-  ingredients: ['peanut butter', 'jelly'],
-  cut: 'triangles',
-  name: 'peanut butter and jelly',
+  name: 'PB&J',
+  bread: 'White',
+  ingredients: ['Peanut Butter', 'Jelly'],
+  cut: 'Triangles',
   serve: function () {
-    console.log("here's your " + this.name + ', enjoy!');
+    console.log(`Here's your ${this.name}. Enjoy!`);
   }
-}
+};
 ```
 
-Now try calling `pbj.serve()`.
+Now try calling `pbj.serve()`:
+```js
+pbj.serve();
+// LOG: Here's your PB&J. Enjoy!
+```
 
 ### `this` and functions
-When we called `pbj.serve()` above, it gave us the message with the `name` value for our sandwich. The `this.name` refers to the `name` of the `pbj` object, because `pbj` invoked the `serve()` function, becoming the owner of that function.
+When we called `pbj.serve()` above, it gave us the message with the `name` value for our sandwich. The `this.name` refers to the `name` of the `pbj` object because we invoked the `serve()` method on the `pbj` object.
 
-If we wanted to explicitly construct a BLT with a `serve()` function, we could do that:
+If we wanted to explicitly add a `serve()` method to our `blt` object, we could do that:
 ```js
 const blt = {
-  bread: 'white',
-  ingredients: ['bacon', 'lettuce', 'tomato'],
-  cut: 'diagonal',
   name: 'BLT',
+  bread: 'White',
+  ingredients: ['Bacon', 'Lettuce', 'Tomato', 'Mayo'],
+  cut: 'Rectangle',
   serve: function () {
-    console.log("here's your " + this.name + ', enjoy!');
+    console.log(`Here's your ${this.name}. Enjoy!`);
   }
 }
 
 blt.serve();
+// LOG: Here's your BLT. Enjoy!
 ```
 
 This works, but now we're repeating this `serve` function everywhere and that's not only a violation of the [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) but also just a total pain.
 
 How can we apply what we know about constructor functions to this problem?
 
-It stands to reason that if we can set primitive property values in a constructor function, we should be able to create methods on the object we're constructing as well. Let's give it a shot:
+It stands to reason that if we can set primitive property values in a constructor function we should also be able to create methods on the object we're constructing. Let's give it a shot:
 ```js
 function Sandwich (bread, ingredients, cut) {
   this.bread = bread;
   this.ingredients = ingredients;
   this.cut = cut;
   this.serve = function () {
-    console.log("here's your " + this.name + ', enjoy!');
-  }
+    console.log(`Here's your ${this.name}. Enjoy!`);
+  };
 }
 
-const blt = new Sandwich('white', ['bacon','lettuce','tomato','mayo'],'rectangle');
+const blt = new Sandwich('White', ['Bacon', 'Lettuce', 'Tomato', 'Mayo'], 'Rectangle');
 
 blt.serve();
+// LOG: Here's your undefined. Enjoy!
 ```
 
 Oops! Not quite what we were looking for, but close. The function worked, but we got `undefined` for `this.name`. Why?
@@ -108,8 +115,8 @@ function Sandwich (bread, ingredients, cut) {
   this.ingredients = ingredients;
   this.cut = cut;
   this.serve = function () {
-    console.log("here's your " + this.name + ', enjoy!');
-  }
+    console.log(`Here's your ${this.name}. Enjoy!`);
+  };
 }
 
 const blt = new Sandwich('white', ['bacon','lettuce','tomato','mayo'],'rectangle');
@@ -130,7 +137,7 @@ Normally, when we want to invoke a function, we simply call it by name directly,
 Let's go back to our `serve` example. We said that there's an off chance that someone will want to eat something other than a sandwich. So we decide to make `serve` a function separate from sandwich:
 ```js
 function serve () {
-  console.log("here's your " + this.name + ', enjoy!');
+  console.log(`Here's your ${this.name}. Enjoy!`);
 }
 ```
 
@@ -154,11 +161,11 @@ function Sandwich (bread, ingredients, name) {
 }
 
 function serve () {
-  console.log("here's your " + this.name + ', enjoy!');
+  console.log(`Here's your ${this.name}. Enjoy!`);
 }
 
-const gc = new Sandwich('white', ['cheese'], 'Grilled Cheese');
-const pbj = new Sandwich('wheat', ['peanut butter', 'raspberry jam'], 'Peanut Butter & Jelly');
+const gc = new Sandwich('White', ['Cheese'], 'Grilled Cheese');
+const pbj = new Sandwich('Wheat', ['Peanut Butter', 'Raspberry Jam'], 'Peanut Butter & Jelly');
 ```
 
 Okay, now we want to be able to do the equivalent of `gc.serve()`, but `serve` is no longer part of the `Sandwich` constructor. This is where
@@ -184,11 +191,11 @@ The only real difference between `call` and `apply` is the way you pass argument
 Let's modify our `serve` function to be a little friendlier:
 ```js
 function serve (customer) {
-  console.log('Hey ' + customer + ", here's your " + this.name + ', enjoy!');
+  console.log(`Hey ${customer}, here's your ${this.name}. Enjoy!`);
 }
 
-const gc = new Sandwich('white', ['cheese'], 'Grilled Cheese');
-const pbj = new Sandwich('wheat', ['peanut butter', 'raspberry jam'],
+const gc = new Sandwich('White', ['Cheese'], 'Grilled Cheese');
+const pbj = new Sandwich('Wheat', ['Peanut Butter', 'Raspberry Jam'],
 'Peanut Butter & Jelly');
 ```
 
@@ -226,7 +233,7 @@ Very similar, but we need to wrap that second argument in brackets to make it an
 Let's add a function to tell a server where to deliver the sandwich to see how `call` and `apply` are different with more arguments:
 ```js
 function deliverFood (customer, table) {
-  console.log('Delivering ' + this.name + ' to ' + customer + ' at table ' + table);
+  console.log(`Delivering ${this.name} to ${customer} at table ${table}`);
 }
 
 deliverFood.call(gc, 'Terry', '4');
@@ -249,9 +256,9 @@ function serve () {
 
 		last = customers.pop();
 
-  	console.log(this.name + ' for ' + customers.join(', ') + ' and ' + last + '. Enjoy!');
+  	console.log(`${this.name} for ${customers.join(', ')} and ${last}. Enjoy!`);
 	} else {
-		console.log(this.name + '. Order up!');
+		console.log(`${this.name}. Order up!`);
 	}
 }
 ```
@@ -294,11 +301,11 @@ function Sandwich (bread, ingredients, name) {
   this.ingredients = ingredients;
   this.name = name;
   this.describe = function () {
-    console.log('Your ' + this.name + ' includes: ' + this.ingredients.join(', ') + '. Yum!');
-  }
+    console.log(`Your ${this.name} includes: ${this.ingredients.join(', ')}. Yum!`);
+  };
 }
 
-const pbj = new Sandwich('wheat', ['chunky peanut butter', 'blackberry preserves'], 'PB&Jam');
+const pbj = new Sandwich('Wheat', ['Chunky Peanut Butter', 'Blackberry Preserves'], 'PB&Jam');
 
 pbj.describe();
 ```
@@ -306,7 +313,7 @@ pbj.describe();
 Awesome. Now we can describe our sandwich. Now someone comes to our lunch counter and wants a salad. We can represent a salad pretty easily:
 ```js
 const salad = {
-  ingredients: ['croutons', 'romaine hearts', 'steak', 'parmesan', 'caesar dressing'],
+  ingredients: ['Croutons', 'Romaine Hearts', 'Steak', 'Parmesan', 'Caesar Dressing'],
   name: 'Steak Caesar'
 }
 ```
@@ -367,14 +374,14 @@ function Sandwich (bread, ingredients, name) {
   this.ingredients = ingredients;
   this.name = name;
   this.describe = function () {
-    console.log('Your ' + this.name + ' includes: ' + this.ingredients.join(', ') + '. Yum!');
-  }
+    console.log(`Your ${this.name} includes: ${this.ingredients.join(', ')}. Yum!`);
+  };
 }
 
-const pbj = new Sandwich('wheat', ['chunky peanut butter', 'blackberry preserves'], 'PB&Jam');
+const pbj = new Sandwich('Wheat', ['Chunky Peanut Butter', 'Blackberry Preserves'], 'PB&Jam');
 
 const salad = {
-  ingredients: ['croutons', 'romaine hearts', 'steak', 'parmesan', 'caesar dressing'],
+  ingredients: ['Croutons', 'Romaine Hearts', 'Steak', 'Parmesan', 'Caesar Dressing'],
   name: 'Steak Caesar'
 };
 
@@ -391,7 +398,7 @@ We know that we can use `bind` to create a new function that we can use later, w
 Let's take our lunch restaurant a step further, and imagine a function to send a server to a table to check on a customer. That function might look something like this:
 ```js
 function visitTable () {
-  console.log('The server is visiting ' + this.name + ' at table number ' + this.tableNumber);
+  console.log(`The server is visiting ${this.name} at table number ${this.tableNumber}.`);
 }
 ```
 
@@ -403,7 +410,7 @@ function Customer (name, tableNumber) {
 }
 ```
 
-Now when a new customer comes in, we want to create a new customer object, then set up a timer for the server to come after they've had enough time to look at the menu.
+Now when a new customer comes in, we want to create a new `Customer` object, then set up a timer for the server to come after they've had enough time to look at the menu.
 
 We know that `setTimeout` takes a function as an argument, and we know that we can't directly invoke `visitTable()` because we need to set `this`. Let's use our new friend `bind` to create a new function with that customer bound to `this` that we can execute within `setTimeout`:
 ```js
