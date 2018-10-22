@@ -673,6 +673,6 @@ and execute them later.
 
 [dry]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/prototype
-[vari]: https://en.wikipedia.org/wiki/Variadic_functio
+[vari]: https://en.wikipedia.org/wiki/Variadic_function
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/js-advanced-functions-this-code-along'>`this` Code-along</a> on Learn.co and start learning to code for free.</p>
